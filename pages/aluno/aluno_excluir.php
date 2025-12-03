@@ -1,6 +1,6 @@
 <?php
-include '../includes/sessao.php';
-include '../includes/conexao.php';
+require "../../includes/sessao.php";
+require "../../includes/header.php";
 
 if ($_GET['token'] !== $_SESSION['token']) {
     die("Token inválido!");
