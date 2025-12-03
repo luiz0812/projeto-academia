@@ -1,20 +1,17 @@
-<?php
-require "../includes/sessao.php";
-require "../includes/conexao.php";
+<?php 
+include "../includes/header.php";
 
-$sql = "SELECT m.id, m.data_matricula, m.status,
-               a.nome AS aluno,
-               p.nome AS plano
-        FROM matricula m
-        JOIN aluno a ON m.aluno_id = a.id
-        JOIN plano p ON m.plano_id = p.id";
-
+$sql = "SELECT m.*, a.nome AS aluno_nome 
+        FROM matriculas m
+        JOIN alunos a ON m.aluno_id = a.id
+        ORDER BY m.id DESC";
 $result = $conn->query($sql);
 ?>
 
 <h2>Lista de Matrículas</h2>
+<a href="cadastrar.php">+ Nova Matrícula</a>
 
-<table border="1">
+<table border="1" cellpadding="10">
     <tr>
         <th>ID</th>
         <th>Aluno</th>
@@ -24,17 +21,19 @@ $result = $conn->query($sql);
         <th>Ações</th>
     </tr>
 
-<?php while($row = $result->fetch_assoc()): ?>
+    <?php while($row = $result->fetch_assoc()): ?>
     <tr>
         <td><?= $row['id'] ?></td>
-        <td><?= $row['aluno'] ?></td>
+        <td><?= $row['aluno_nome'] ?></td>
         <td><?= $row['plano'] ?></td>
         <td><?= $row['data_matricula'] ?></td>
         <td><?= $row['status'] ?></td>
         <td>
-            <a href="editar-matricula.php?id=<?= $row['id'] ?>">Editar</a>
-            <a href="excluir-matricula.php?id=<?= $row['id'] ?>">Excluir</a>
+            <a href="editar.php?id=<?= $row['id'] ?>">Editar</a> |
+            <a href="excluir.php?id=<?= $row['id'] ?>">Excluir</a>
         </td>
     </tr>
-<?php endwhile; ?>
+    <?php endwhile; ?>
 </table>
+
+<?php include "../includes/footer.php"; ?>

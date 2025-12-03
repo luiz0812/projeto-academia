@@ -1,46 +1,45 @@
-<?php
-session_start();
-include '../includes/sessao.php';
-include '../includes/conexao.php';
+<?php 
+include "../includes/header.php";
 
-// Mensagens
-if (isset($_SESSION['msg'])) {
-    echo "<p>{$_SESSION['msg']}</p>";
-    unset($_SESSION['msg']);
-}
+$sql = "SELECT p.*, m.plano, a.nome AS aluno_nome
+        FROM pagamentos p
+        JOIN matriculas m ON p.matricula_id = m.id
+        JOIN alunos a ON m.aluno_id = a.id
+        ORDER BY p.id DESC";
 
-$sql = "SELECT p.*, a.nome AS aluno 
-        FROM pagamento p
-        JOIN aluno a ON a.id_aluno = p.id_aluno
-        ORDER BY p.id_pagamento DESC";
-$query = $conn->query($sql);
+$result = $conn->query($sql);
 ?>
 
-<h2>Pagamentos</h2>
-<a href="pagamento_add.php">+ Registrar Pagamento</a>
+<h2>Lista de Pagamentos</h2>
+<a href="cadastrar.php">+ Registrar Pagamento</a>
 
-<table border="1">
+<table border="1" cellpadding="10">
     <tr>
         <th>ID</th>
         <th>Aluno</th>
+        <th>Plano</th>
         <th>Valor</th>
         <th>Data</th>
+        <th>Método</th>
         <th>Status</th>
         <th>Ações</th>
     </tr>
 
-    <?php while ($p = $query->fetch_assoc()) { ?>
-        <tr>
-            <td><?= $p['id_pagamento'] ?></td>
-            <td><?= $p['aluno'] ?></td>
-            <td>R$ <?= number_format($p['valor'], 2, ',', '.') ?></td>
-            <td><?= $p['data_pagamento'] ?></td>
-            <td><?= $p['status'] ?></td>
-            <td>
-                <a href="pagamento_edit.php?id=<?= $p['id_pagamento'] ?>">Editar</a>
-                <a onclick="return confirm('Excluir pagamento?')" 
-                   href="pagamento_delete.php?id=<?= $p['id_pagamento'] ?>">Excluir</a>
-            </td>
-        </tr>
-    <?php } ?>
+    <?php while($row = $result->fetch_assoc()): ?>
+    <tr>
+        <td><?= $row['id'] ?></td>
+        <td><?= $row['aluno_nome'] ?></td>
+        <td><?= $row['plano'] ?></td>
+        <td>R$ <?= $row['valor'] ?></td>
+        <td><?= $row['data_pagamento'] ?></td>
+        <td><?= $row['metodo'] ?></td>
+        <td><?= $row['status'] ?></td>
+        <td>
+            <a href="editar.php?id=<?= $row['id'] ?>">Editar</a> |
+            <a href="excluir.php?id=<?= $row['id'] ?>">Excluir</a>
+        </td>
+    </tr>
+    <?php endwhile; ?>
 </table>
+
+<?php include "../includes/footer.php"; ?>

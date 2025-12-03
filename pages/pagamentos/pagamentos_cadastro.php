@@ -1,76 +1,56 @@
-<?php
-session_start();
-include '../includes/sessao.php';
-include '../includes/conexao.php';
+<?php 
+include "../includes/header.php";
 
-// token
-if (!isset($_SESSION['token'])) {
-    $_SESSION['token'] = bin2hex(random_bytes(32));
-}
+$matriculas = $conn->query("
+    SELECT m.id, a.nome, m.plano 
+    FROM matriculas m
+    JOIN alunos a ON m.aluno_id = a.id
+");
 
-if ($valor <= 0) {
-    die("Erro: O valor do pagamento deve ser maior que zero.");
-}
-
-
-// Carregar alunos
-$alunos = $conn->query("SELECT * FROM aluno ORDER BY nome ASC");
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    if ($_POST['token'] !== $_SESSION['token']) {
-        die("Token inválido!");
-    }
-
-    $id_aluno = $_POST['id_aluno'];
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $matricula_id = $_POST['matricula_id'];
     $valor = $_POST['valor'];
-    $data = $_POST['data_pagamento'];
-    $status = $_POST['status'];
+    $data_pagamento = $_POST['data_pagamento'];
+    $metodo = $_POST['metodo'];
 
-    if ($valor == "" || $id_aluno == "") {
-        $_SESSION['msg'] = "Preencha aluno e valor!";
-        header("Location: pagamento_add.php");
-        exit;
-    }
-
-    $sql = "INSERT INTO pagamento (id_aluno, valor, data_pagamento, status)
-            VALUES ($id_aluno, '$valor', '$data', '$status')";
+    $sql = "INSERT INTO pagamentos (matricula_id, valor, data_pagamento, metodo)
+            VALUES ('$matricula_id', '$valor', '$data_pagamento', '$metodo')";
 
     if ($conn->query($sql)) {
-        $_SESSION['msg'] = "Pagamento registrado!";
-        header("Location: pagamento_list.php");
-    } else {
-        $_SESSION['msg'] = "Erro ao registrar!";
-        header("Location: pagamento_add.php");
+        header("Location: listar.php");
+        exit;
     }
-    exit;
 }
 ?>
 
 <h2>Registrar Pagamento</h2>
 
 <form method="POST">
-    <input type="hidden" name="token" value="<?= $_SESSION['token'] ?>">
 
-    <label>Aluno:</label><br>
-    <select name="id_aluno">
+    <label>Matrícula:</label>
+    <select name="matricula_id" required>
         <option value="">Selecione...</option>
-        <?php while ($a = $alunos->fetch_assoc()) { ?>
-            <option value="<?= $a['id_aluno'] ?>"><?= $a['nome'] ?></option>
-        <?php } ?>
+        <?php while($m = $matriculas->fetch_assoc()): ?>
+            <option value="<?= $m['id'] ?>">
+                <?= $m['nome'] ?> - <?= $m['plano'] ?>
+            </option>
+        <?php endwhile; ?>
     </select><br><br>
 
-    <label>Valor:</label><br>
-    <input type="number" step="0.01" name="valor"><br><br>
+    <label>Valor:</label>
+    <input type="number" step="0.01" name="valor" required><br><br>
 
-    <label>Data:</label><br>
-    <input type="date" name="data_pagamento"><br><br>
+    <label>Data:</label>
+    <input type="date" name="data_pagamento" required><br><br>
 
-    <label>Status:</label><br>
-    <select name="status">
-        <option>Pago</option>
-        <option>Pendente</option>
+    <label>Método:</label>
+    <select name="metodo" required>
+        <option value="pix">PIX</option>
+        <option value="dinheiro">Dinheiro</option>
+        <option value="cartao">Cartão</option>
     </select><br><br>
 
-    <button type="submit">Salvar</button>
+    <button type="submit">Registrar</button>
 </form>
+
+<?php include "../includes/footer.php"; ?>

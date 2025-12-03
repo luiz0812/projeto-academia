@@ -1,14 +1,13 @@
 <?php
+// includes/conexao.php
 $host = "localhost";
-$user = "root"; // o seu user do xampp
-$pass = "";     // se tiver senha coloque aqui
-$dbname = "projeto_academia"; // nome do banco que criou no mysql
+$user = "root";
+$pass = "";
+$db   = "projeto_academia";
 
-$conn = new mysqli($host, $user, $pass, $dbname);
-
+$conn = new mysqli($host, $user, $pass, $db);
 if ($conn->connect_error) {
-    die("Erro ao conectar com o banco: " . $conn->connect_error);
+    die("Erro na conexão: " . $conn->connect_error);
 }
-
-mysqli_set_charset($conn, "utf8");
+$conn->set_charset("utf8mb4");
 ?>

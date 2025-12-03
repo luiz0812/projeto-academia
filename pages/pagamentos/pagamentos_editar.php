@@ -1,83 +1,71 @@
-<?php
-session_start();
-include '../includes/sessao.php';
-include '../includes/conexao.php';
-
-// token
-if (!isset($_SESSION['token'])) {
-    $_SESSION['token'] = bin2hex(random_bytes(32));
-}
+<?php 
+include "../includes/header.php";
 
 $id = $_GET['id'];
 
-$sql = "SELECT * FROM pagamento WHERE id_pagamento = $id";
-$res = $conn->query($sql);
-$p = $res->fetch_assoc();
+$pag = $conn->query("SELECT * FROM pagamentos WHERE id = $id")->fetch_assoc();
 
-if (!$p) {
-    die("Pagamento não encontrado.");
-}
+$matriculas = $conn->query("
+    SELECT m.id, a.nome, m.plano 
+    FROM matriculas m
+    JOIN alunos a ON m.aluno_id = a.id
+");
 
-// Carregar alunos
-$alunos = $conn->query("SELECT * FROM aluno ORDER BY nome ASC");
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    if ($_POST['token'] !== $_SESSION['token']) {
-        die("Token inválido!");
-    }
-
-    $id_aluno = $_POST['id_aluno'];
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $matricula_id = $_POST['matricula_id'];
     $valor = $_POST['valor'];
-    $data = $_POST['data_pagamento'];
+    $data_pagamento = $_POST['data_pagamento'];
+    $metodo = $_POST['metodo'];
     $status = $_POST['status'];
 
-    $update = "UPDATE pagamento SET
-                id_aluno = $id_aluno,
-                valor = '$valor',
-                data_pagamento = '$data',
-                status = '$status'
-               WHERE id_pagamento = $id";
+    $sql = "UPDATE pagamentos SET 
+        matricula_id = '$matricula_id',
+        valor = '$valor',
+        data_pagamento = '$data_pagamento',
+        metodo = '$metodo',
+        status = '$status'
+        WHERE id = $id";
 
-    if ($conn->query($update)) {
-        $_SESSION['msg'] = "Pagamento atualizado!";
-        header("Location: pagamento_list.php");
-    } else {
-        $_SESSION['msg'] = "Erro ao atualizar!";
-        header("Location: pagamento_edit.php?id=$id");
+    if ($conn->query($sql)) {
+        header("Location: listar.php");
+        exit;
     }
-    exit;
 }
 ?>
 
 <h2>Editar Pagamento</h2>
 
 <form method="POST">
-    <input type="hidden" name="token" value="<?= $_SESSION['token'] ?>">
 
-    <label>Aluno:</label><br>
-    <select name="id_aluno">
-        <?php while ($a = $alunos->fetch_assoc()) { ?>
-            <option value="<?= $a['id_aluno'] ?>"
-                <?= $a['id_aluno']==$p['id_aluno']?'selected':'' ?>>
-                <?= $a['nome'] ?>
+    <label>Matrícula:</label>
+    <select name="matricula_id">
+        <?php while($m = $matriculas->fetch_assoc()): ?>
+            <option value="<?= $m['id'] ?>" <?= $m['id']==$pag['matricula_id']?'selected':'' ?>>
+                <?= $m['nome'] ?> - <?= $m['plano'] ?>
             </option>
-        <?php } ?>
+        <?php endwhile; ?>
     </select><br><br>
 
-    <label>Valor:</label><br>
-    <input type="number" step="0.01" name="valor" 
-           value="<?= $p['valor'] ?>"><br><br>
+    <label>Valor:</label>
+    <input type="number" step="0.01" name="valor" value="<?= $pag['valor'] ?>" required><br><br>
 
-    <label>Data Pagamento:</label><br>
-    <input type="date" name="data_pagamento" 
-           value="<?= $p['data_pagamento'] ?>"><br><br>
+    <label>Data:</label>
+    <input type="date" name="data_pagamento" value="<?= $pag['data_pagamento'] ?>" required><br><br>
 
-    <label>Status:</label><br>
+    <label>Método:</label>
+    <select name="metodo">
+        <option value="pix" <?= $pag['metodo']=='pix'?'selected':'' ?>>PIX</option>
+        <option value="dinheiro" <?= $pag['metodo']=='dinheiro'?'selected':'' ?>>Dinheiro</option>
+        <option value="cartao" <?= $pag['metodo']=='cartao'?'selected':'' ?>>Cartão</option>
+    </select><br><br>
+
+    <label>Status:</label>
     <select name="status">
-        <option <?= $p['status']=='Pago'?'selected':'' ?>>Pago</option>
-        <option <?= $p['status']=='Pendente'?'selected':'' ?>>Pendente</option>
+        <option value="pago" <?= $pag['status']=='pago'?'selected':'' ?>>Pago</option>
+        <option value="pendente" <?= $pag['status']=='pendente'?'selected':'' ?>>Pendente</option>
     </select><br><br>
 
     <button type="submit">Salvar</button>
 </form>
+
+<?php include "../includes/footer.php"; ?>

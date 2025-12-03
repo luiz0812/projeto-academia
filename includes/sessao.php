@@ -1,14 +1,19 @@
 <?php
-session_start();
-
-if(!isset($_SESSION['token'])){
-    $_SESSION['token'] = bin2hex(random_bytes(32)); // TOKEN para segurança dos CRUDs
+// includes/sessao.php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
+// Exemplo: para marcar usuário logado
+// $_SESSION['usuario_logado'] = true; // quando fizer login
 
-function verificarSessao(){
-    if(!isset($_SESSION['logado']) || $_SESSION['logado'] != true){
-        header("Location: ../../index.php?msg=acesso_negado");
-        exit;
+// Função helper para mensagens flash
+function flash($key = null, $value = null) {
+    if ($key === null) return $_SESSION['flash'] ?? [];
+    if ($value === null) {
+        $val = $_SESSION['flash'][$key] ?? null;
+        unset($_SESSION['flash'][$key]);
+        return $val;
     }
+    $_SESSION['flash'][$key] = $value;
 }
 ?>

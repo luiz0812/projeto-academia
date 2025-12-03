@@ -1,14 +1,10 @@
-<?php
-require "../includes/sessao.php";
-require "../includes/conexao.php";
+<?php 
+include "../includes/header.php";
 
 $id = $_GET['id'];
 
-$sql = "DELETE FROM matricula WHERE id=$id";
+$conn->query("DELETE FROM matriculas WHERE id = $id");
 
-if ($conn->query($sql)) {
-    echo "Matrícula excluída!";
-} else {
-    echo "Erro: " . $conn->error;
-}
+header("Location: listar.php");
+exit;
 ?>

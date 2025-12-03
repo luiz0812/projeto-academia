@@ -1,17 +1,10 @@
-<?php
-session_start();
-include '../includes/sessao.php';
-include '../includes/conexao.php';
+<?php 
+include "../includes/header.php";
 
 $id = $_GET['id'];
 
-$sql = "DELETE FROM pagamento WHERE id_pagamento = $id";
+$conn->query("DELETE FROM pagamentos WHERE id = $id");
 
-if ($conn->query($sql)) {
-    $_SESSION['msg'] = "Pagamento excluído!";
-} else {
-    $_SESSION['msg'] = "Erro ao excluir!";
-}
-
-header("Location: pagamento_list.php");
+header("Location: listar.php");
 exit;
+?>
