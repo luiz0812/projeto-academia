@@ -2,6 +2,15 @@
 include '../includes/sessao.php';
 include '../includes/conexao.php';
 
+$nome = $_POST['nome'];
+$valor = $_POST['valor'];
+
+// REGRA: valor mínimo permitido
+if ($valor < 50) {
+    die("Erro: O valor do plano deve ser de pelo menos R$ 50,00.");
+}
+
+
 $erro = "";
 $sucesso = "";
 

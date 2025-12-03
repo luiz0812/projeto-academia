@@ -8,6 +8,11 @@ if (!isset($_SESSION['token'])) {
     $_SESSION['token'] = bin2hex(random_bytes(32));
 }
 
+if ($valor <= 0) {
+    die("Erro: O valor do pagamento deve ser maior que zero.");
+}
+
+
 // Carregar alunos
 $alunos = $conn->query("SELECT * FROM aluno ORDER BY nome ASC");
 

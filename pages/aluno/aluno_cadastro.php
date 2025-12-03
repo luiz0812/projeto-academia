@@ -5,6 +5,15 @@ include '../includes/conexao.php';
 $erro = "";
 $sucesso = "";
 
+function validarCPF($cpf) {
+    return preg_match('/^[0-9]{11}$/', $cpf);
+}
+
+if (!validarCPF($cpf)) {
+    die("Erro: CPF inválido. Digite apenas números, exemplo: 12345678901");
+}
+
+
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     // Verifica token

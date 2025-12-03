@@ -15,3 +15,10 @@ if ($conn->query($sql)) {
 } else {
     echo "Erro ao excluir!";
 }
+
+$sqlCheck = "SELECT * FROM matricula WHERE aluno_id=$id";
+$check = $conn->query($sqlCheck);
+
+if ($check->num_rows > 0) {
+    die("Erro: Não é possível excluir aluno com matrículas ativas.");
+}
