@@ -1,0 +1,88 @@
+/* ======== ESTILO GERAL ======== */
+body {
+    background-color: #f4f4f4;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ======== CONTAINER PRINCIPAL ======== */
+.container {
+    margin-top: 25px;
+}
+
+/* ======== TÍTULOS ======== */
+h1, h2, h3 {
+    font-weight: 600;
+    color: #333;
+}
+
+/* ======== NAVBAR ======== */
+.navbar-brand {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.nav-link {
+    font-size: 16px;
+}
+
+/* ======== TABELAS ======== */
+table {
+    background: white;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+table thead {
+    background: #343a40;
+    color: white;
+}
+
+table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Botões da tabela */
+.btn-sm {
+    padding: 5px 10px;
+    font-size: 14px;
+}
+
+/* ======== FORMULÁRIOS ======== */
+form {
+    background: white;
+    padding: 20px;
+    border-radius: 6px;
+    box-shadow: 0px 0px 4px rgba(0,0,0,0.1);
+}
+
+label {
+    font-weight: bold;
+}
+
+input, select {
+    margin-bottom: 12px;
+}
+
+/* ======== RODAPÉ ======== */
+footer {
+    margin-top: 30px;
+}
+
+/* ======== MENSAGENS DE SUCESSO / ERRO ======== */
+.msg-sucesso {
+    padding: 10px;
+    background: #d4edda;
+    border: 1px solid #74c97d;
+    color: #155724;
+    border-radius: 4px;
+    margin-bottom: 15px;
+}
+
+.msg-erro {
+    padding: 10px;
+    background: #f8d7da;
+    border: 1px solid #f5aaaa;
+    color: #721c24;
+    border-radius: 4px;
+    margin-bottom: 15px;
+}
