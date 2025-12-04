@@ -1,86 +1,185 @@
-/* style.css - layout limpo e responsivo */
+/* ==================== TEMA ACADEMIA ==================== */
 :root{
-    --bg:#f5f7fb;
+    --bg:#f2f2f2;
     --card:#ffffff;
-    --accent:#1f6feb;
-    --muted:#6b7280;
+    --primary:#E53935;      /* vermelho energia */
+    --primary-dark:#c62828; 
     --dark:#111827;
+    --text:#2d2d2d;
+    --muted:#6b7280;
 }
 
-*{box-sizing:border-box}
+/* RESET */
+*{box-sizing:border-box;margin:0;padding:0;}
 body{
-    margin:0;
-    font-family:Inter,system-ui,Arial,sans-serif;
+    font-family:"Montserrat",Arial,sans-serif;
     background:var(--bg);
-    color:var(--dark);
-    -webkit-font-smoothing:antialiased;
+    color:var(--text);
 }
 
-.wrap{
-    max-width:1100px;
-    margin:0 auto;
-    padding:20px;
-}
-
+/* ==================== NAVBAR ==================== */
 .topbar{
-    background:#0f1724;
+    background:var(--dark);
     color:#fff;
-    padding:12px 0;
-    box-shadow:0 2px 6px rgba(0,0,0,0.08);
+    padding:18px 0;
+    border-bottom:4px solid var(--primary);
+    box-shadow:0 2px 12px rgba(0,0,0,.30);
 }
-.topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:20px}
-.brand a{color:#fff;text-decoration:none;font-size:20px;font-weight:600}
-.mainnav a{color:#c7d2fe;text-decoration:none;margin-left:14px;font-weight:600}
-.mainnav a:hover{color:#fff}
+.topbar .wrap{
+    max-width:1200px;
+    margin:auto;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+.brand a{
+    font-size:26px;
+    font-weight:800;
+    text-decoration:none;
+    color:#fff;
+    text-transform:uppercase;
+    letter-spacing:1px;
+}
+.mainnav a{
+    color:#e5e7eb;
+    text-decoration:none;
+    margin-left:18px;
+    font-weight:600;
+    font-size:15px;
+}
+.mainnav a:hover{color:var(--primary)}
 
-.content{padding:28px 0}
+/* ==================== HOME / DASHBOARD ==================== */
+.home{
+    max-width:1200px;
+    margin:auto;
+    padding:60px 20px;
+    text-align:center;
+}
+.home h2{
+    font-size:32px;
+    font-weight:800;
+    color:var(--dark);
+    text-transform:uppercase;
+    margin-bottom:5px;
+}
+.home p{
+    color:var(--muted);
+    font-size:16px;
+}
 
-/* home cards */
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:18px;margin-top:18px}
+/* CARDS DE ACADEMIA */
+.cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+    gap:22px;
+    margin-top:35px;
+}
 .card{
     background:var(--card);
-    padding:18px;
-    border-radius:12px;
+    padding:22px;
+    border-radius:14px;
     text-decoration:none;
     color:inherit;
-    box-shadow:0 4px 18px rgba(17,24,39,0.06);
-    transition:transform .14s ease,box-shadow .14s ease;
-    display:block;
+    border-bottom:6px solid var(--primary);
+    box-shadow:0 10px 22px rgba(0,0,0,.08);
+    transition:.2s;
 }
-.card:hover{transform:translateY(-6px);box-shadow:0 10px 30px rgba(17,24,39,0.08)}
-.card h3{margin:0 0 6px;font-size:16px}
-.card p{margin:0;color:var(--muted);font-size:14px}
+.card:hover{
+    transform:scale(1.05);
+    box-shadow:0 12px 30px rgba(0,0,0,.15);
+    border-color:var(--primary-dark);
+}
+.card h3{
+    font-size:20px;
+    font-weight:800;
+    text-transform:uppercase;
+    color:var(--dark);
+}
+.card p{color:var(--muted);font-size:14px;font-weight:500;}
 
-/* forms and tables */
+/* ==================== CONTAINERS / FORMULÁRIOS ==================== */
 .container{
-    background:var(--card);
-    padding:18px;
-    border-radius:10px;
-    box-shadow:0 6px 22px rgba(2,6,23,0.04);
+    max-width:950px;
+    background:#fff;
+    margin:auto;
+    padding:26px;
+    border-radius:12px;
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
 }
-h2{margin:0 0 12px}
-form{margin-top:12px;display:grid;gap:10px}
-label{font-size:13px;color:var(--muted);display:block;margin-bottom:4px}
-input[type="text"],input[type="email"],input[type="date"],input[type="number"],select,textarea{
-    padding:10px;border:1px solid #e6e9ef;border-radius:8px;width:100%;
-    font-size:14px;background:transparent;
+h2{
+    font-weight:800;
+    font-size:26px;
+    color:var(--dark);
+    margin-bottom:15px;
+    text-transform:uppercase;
 }
-textarea{min-height:90px;resize:vertical}
-button,input[type="submit"]{
-    background:var(--accent);color:#fff;padding:10px 14px;border:none;border-radius:8px;cursor:pointer;font-weight:600;
-}
-button.secondary{background:#eef2ff;color:var(--accent)}
-.table-wrap{overflow-x:auto;margin-top:12px}
-table{width:100%;border-collapse:collapse;background:var(--card);border-radius:8px;overflow:hidden}
-th,td{padding:12px 14px;text-align:left;border-bottom:1px solid #f1f5f9}
-th{background:#fbfdff;color:var(--muted);font-weight:700}
-tr:last-child td{border-bottom:none}
-.actions a{margin-right:8px;color:var(--accent);text-decoration:none}
-.actions a.delete{color:#ef4444}
 
-/* responsiveness */
-@media (max-width:720px){
+form{display:grid;gap:12px;margin-top:10px}
+label{font-weight:700;font-size:14px;color:var(--dark)}
+input,select,textarea{
+    padding:12px;
+    font-size:14px;
+    border:2px solid #ddd;
+    border-radius:8px;
+    background:#fff;
+}
+textarea{resize:vertical;min-height:90px}
+
+/* BOTÕES ESTILO POWER */
+button,input[type="submit"]{
+    background:var(--primary);
+    padding:12px 20px;
+    border:none;
+    border-radius:8px;
+    font-size:15px;
+    text-transform:uppercase;
+    font-weight:800;
+    cursor:pointer;
+    color:#fff;
+    transition:.2s;
+}
+button:hover,input[type="submit"]:hover{
+    background:var(--primary-dark);
+    transform:scale(1.04);
+}
+
+/* SECUNDÁRIO */
+button.secondary{
+    background:#eee;
+    color:var(--primary);
+    font-weight:800;
+}
+button.secondary:hover{
+    background:#ddd;
+}
+
+/* ==================== TABELAS ==================== */
+.table-wrap{overflow-x:auto;margin-top:15px}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th{
+    background:var(--primary);
+    color:#fff;
+    font-weight:800;
+    text-transform:uppercase;
+}
+td,th{
+    padding:14px;
+    border-bottom:1px solid #eaeaea;
+}
+tr:hover td{background:#fff5f5}
+
+.actions a{
+    font-weight:800;
+    color:var(--primary);
+    text-decoration:none;
+    margin-right:10px;
+}
+.actions .delete{color:black;font-weight:900}
+
+/* ==================== RESPONSIVO ==================== */
+@media(max-width:760px){
     .mainnav{display:none}
-    .topbar .wrap{flex-direction:column;align-items:flex-start}
-    .cards{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}
+    .home h2{font-size:25px}
+    .cards{grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
 }
