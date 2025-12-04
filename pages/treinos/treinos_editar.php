@@ -3,36 +3,27 @@ include "../../includes/sessao.php";
 include "../../includes/conexao.php";
 include "../../includes/header.php";
 
-$id = $_GET['id'];
+$id = (int)($_GET['id'] ?? 0);
+$tr = $conn->query("SELECT * FROM treinos WHERE id=$id")->fetch_assoc();
+if (!$tr) { echo "<p>Treino não encontrado.</p>"; include "../../includes/footer.php"; exit; }
 
-$sql = "SELECT * FROM treinos WHERE id = $id";
-$result = $conn->query($sql);
-$treino = $result->fetch_assoc();
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $nome = $_POST['nome'];
-    $descricao = $_POST['descricao'];
-
-    $update = "UPDATE treinos SET nome='$nome', descricao='$descricao' WHERE id=$id";
-
-    if ($conn->query($update)) {
-        echo "<script>alert('Treino atualizado!'); location.href='treinos_lista.php';</script>";
-    } else {
-        echo "Erro: " . $conn->error;
-    }
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $nome = $conn->real_escape_string($_POST['nome']);
+    $descricao = $conn->real_escape_string($_POST['descricao']);
+    if ($conn->query("UPDATE treinos SET nome='$nome', descricao='$descricao' WHERE id=$id")) {
+        echo "<script>location.href='treinos_lista.php';</script>"; exit;
+    } else { $erro = $conn->error; }
 }
 ?>
-
-<h2>Editar Treino</h2>
-
-<form method="POST">
-    <label>Nome do Treino:</label>
-    <input type="text" name="nome" value="<?= $treino['nome']; ?>" required>
-
-    <label>Descrição:</label>
-    <textarea name="descricao" required><?= $treino['descricao']; ?></textarea>
-
-    <button type="submit" class="btn">Salvar</button>
-</form>
-
+<div class="container">
+    <h2>Editar Treino #<?= $id ?></h2>
+    <?php if(!empty($erro)) echo "<p class='error'>Erro: $erro</p>"; ?>
+    <form method="POST">
+        <label>Nome</label>
+        <input type="text" name="nome" value="<?= htmlspecialchars($tr['nome']) ?>" required>
+        <label>Descrição</label>
+        <textarea name="descricao" required><?= htmlspecialchars($tr['descricao']) ?></textarea>
+        <input type="submit" value="Salvar">
+    </form>
+</div>
 <?php include "../../includes/footer.php"; ?>

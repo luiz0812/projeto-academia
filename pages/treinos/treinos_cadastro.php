@@ -3,30 +3,23 @@ include "../../includes/sessao.php";
 include "../../includes/conexao.php";
 include "../../includes/header.php";
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $nome = $_POST['nome'];
-    $descricao = $_POST['descricao'];
-
-    $sql = "INSERT INTO treinos (nome, descricao) VALUES ('$nome', '$descricao')";
-
-    if ($conn->query($sql)) {
-        echo "<script>alert('Treino cadastrado!'); location.href='treinos_lista.php';</script>";
-    } else {
-        echo "Erro: " . $conn->error;
-    }
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $nome = $conn->real_escape_string($_POST['nome']);
+    $descricao = $conn->real_escape_string($_POST['descricao']);
+    if ($conn->query("INSERT INTO treinos (nome, descricao) VALUES ('$nome','$descricao')")) {
+        echo "<script>location.href='treinos_lista.php';</script>"; exit;
+    } else { $erro = $conn->error; }
 }
 ?>
-
-<h2>Cadastrar Treino</h2>
-
-<form method="POST">
-    <label>Nome do Treino:</label>
-    <input type="text" name="nome" required>
-
-    <label>Descrição:</label>
-    <textarea name="descricao" required></textarea>
-
-    <button type="submit" class="btn">Cadastrar</button>
-</form>
-
+<div class="container">
+    <h2>Cadastrar Treino</h2>
+    <?php if(!empty($erro)) echo "<p class='error'>Erro: $erro</p>"; ?>
+    <form method="POST">
+        <label>Nome</label>
+        <input type="text" name="nome" required>
+        <label>Descrição</label>
+        <textarea name="descricao" required></textarea>
+        <input type="submit" value="Salvar">
+    </form>
+</div>
 <?php include "../../includes/footer.php"; ?>
