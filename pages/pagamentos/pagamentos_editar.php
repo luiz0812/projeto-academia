@@ -1,71 +1,58 @@
-<?php 
-include "../includes/header.php";
+<?php include "../../includes/header.php"; ?>
 
-$id = $_GET['id'];
+<?php
+$id = (int)$_GET['id'];
+$pg = $conn->query("SELECT * FROM pagamentos WHERE id=$id")->fetch_assoc();
+if (!$pg) {
+    echo "<p>Pagamento não encontrado.</p>";
+    include "../../includes/footer.php";
+    exit;
+}
 
-$pag = $conn->query("SELECT * FROM pagamentos WHERE id = $id")->fetch_assoc();
+$matriculas = $conn->query("SELECT m.id, a.nome AS aluno FROM matriculas m LEFT JOIN alunos a ON m.aluno_id = a.id ORDER BY m.id DESC");
 
-$matriculas = $conn->query("
-    SELECT m.id, a.nome, m.plano 
-    FROM matriculas m
-    JOIN alunos a ON m.aluno_id = a.id
-");
+if ($_POST) {
+    $matricula_id = (int)$_POST['matricula_id'];
+    $valor = $conn->real_escape_string($_POST['valor']);
+    $data = $conn->real_escape_string($_POST['data_pagamento']);
+    $metodo = $conn->real_escape_string($_POST['metodo']);
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $matricula_id = $_POST['matricula_id'];
-    $valor = $_POST['valor'];
-    $data_pagamento = $_POST['data_pagamento'];
-    $metodo = $_POST['metodo'];
-    $status = $_POST['status'];
-
-    $sql = "UPDATE pagamentos SET 
-        matricula_id = '$matricula_id',
-        valor = '$valor',
-        data_pagamento = '$data_pagamento',
-        metodo = '$metodo',
-        status = '$status'
-        WHERE id = $id";
-
+    $sql = "UPDATE pagamentos SET matricula_id=$matricula_id, valor='$valor', data_pagamento='$data', metodo='$metodo' WHERE id=$id";
     if ($conn->query($sql)) {
-        header("Location: listar.php");
-        exit;
+        echo "<script>alert('Pagamento atualizado!'); location.href='pagamentos_lista.php';</script>";
+    } else {
+        echo "<p>Erro: " . $conn->error . "</p>";
     }
 }
 ?>
 
-<h2>Editar Pagamento</h2>
+<h2>Editar Pagamento #<?= $id ?></h2>
 
 <form method="POST">
+    <label>Matrícula (Aluno)</label>
+    <select name="matricula_id" required>
+        <?php while($m = $matriculas->fetch_assoc()) {
+            $sel = ($m['id'] == $pg['matricula_id']) ? 'selected' : '';
+        ?>
+            <option value="<?= $m['id'] ?>" <?= $sel ?>><?= htmlspecialchars($m['id'] . " - " . $m['aluno']) ?></option>
+        <?php } ?>
+    </select>
 
-    <label>Matrícula:</label>
-    <select name="matricula_id">
-        <?php while($m = $matriculas->fetch_assoc()): ?>
-            <option value="<?= $m['id'] ?>" <?= $m['id']==$pag['matricula_id']?'selected':'' ?>>
-                <?= $m['nome'] ?> - <?= $m['plano'] ?>
-            </option>
-        <?php endwhile; ?>
-    </select><br><br>
+    <label>Valor</label>
+    <input type="text" name="valor" value="<?= $pg['valor'] ?>" required>
 
-    <label>Valor:</label>
-    <input type="number" step="0.01" name="valor" value="<?= $pag['valor'] ?>" required><br><br>
+    <label>Data de Pagamento</label>
+    <input type="date" name="data_pagamento" value="<?= $pg['data_pagamento'] ?>" required>
 
-    <label>Data:</label>
-    <input type="date" name="data_pagamento" value="<?= $pag['data_pagamento'] ?>" required><br><br>
+    <label>Método</label>
+    <select name="metodo" required>
+        <option value="Dinheiro" <?= $pg['metodo']=='Dinheiro'?'selected':'' ?>>Dinheiro</option>
+        <option value="Cartão" <?= $pg['metodo']=='Cartão'?'selected':'' ?>>Cartão</option>
+        <option value="Pix" <?= $pg['metodo']=='Pix'?'selected':'' ?>>Pix</option>
+        <option value="Transferência" <?= $pg['metodo']=='Transferência'?'selected':'' ?>>Transferência</option>
+    </select>
 
-    <label>Método:</label>
-    <select name="metodo">
-        <option value="pix" <?= $pag['metodo']=='pix'?'selected':'' ?>>PIX</option>
-        <option value="dinheiro" <?= $pag['metodo']=='dinheiro'?'selected':'' ?>>Dinheiro</option>
-        <option value="cartao" <?= $pag['metodo']=='cartao'?'selected':'' ?>>Cartão</option>
-    </select><br><br>
-
-    <label>Status:</label>
-    <select name="status">
-        <option value="pago" <?= $pag['status']=='pago'?'selected':'' ?>>Pago</option>
-        <option value="pendente" <?= $pag['status']=='pendente'?'selected':'' ?>>Pendente</option>
-    </select><br><br>
-
-    <button type="submit">Salvar</button>
+    <input type="submit" value="Salvar Alterações">
 </form>
 
-<?php include "../includes/footer.php"; ?>
+<?php include "../../includes/footer.php"; ?>

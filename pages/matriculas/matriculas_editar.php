@@ -1,56 +1,65 @@
-<?php 
-include "../includes/header.php";
+<?php include "../../includes/header.php"; ?>
 
-$id = $_GET['id'];
+<?php
+$id = (int)$_GET['id'];
+// buscar matrícula
+$mat = $conn->query("SELECT * FROM matriculas WHERE id=$id")->fetch_assoc();
+if (!$mat) {
+    echo "<p>Matrícula não encontrada.</p>";
+    include "../../includes/footer.php";
+    exit;
+}
 
-$alunos = $conn->query("SELECT * FROM alunos ORDER BY nome");
-$mat = $conn->query("SELECT * FROM matriculas WHERE id = $id")->fetch_assoc();
+$alunos = $conn->query("SELECT id, nome FROM alunos ORDER BY nome");
+$planos = $conn->query("SELECT id, nome FROM planos ORDER BY nome");
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $aluno_id = $_POST['aluno_id'];
-    $plano = $_POST['plano'];
-    $data_matricula = $_POST['data_matricula'];
-    $status = $_POST['status'];
+if ($_POST) {
+    $aluno_id = (int)$_POST['aluno_id'];
+    $plano_id = (int)$_POST['plano_id'];
+    $data = $conn->real_escape_string($_POST['data_matricula']);
+    $status = $conn->real_escape_string($_POST['status']);
 
-    $sql = "UPDATE matriculas SET 
-        aluno_id = '$aluno_id',
-        plano = '$plano',
-        data_matricula = '$data_matricula',
-        status = '$status'
-        WHERE id = $id";
-
+    $sql = "UPDATE matriculas SET aluno_id=$aluno_id, plano_id=$plano_id, data_matricula='$data', status='$status' WHERE id=$id";
     if ($conn->query($sql)) {
-        header("Location: listar.php");
-        exit;
+        echo "<script>alert('Matrícula atualizada!'); location.href='matriculas_lista.php';</script>";
+    } else {
+        echo "<p>Erro: " . $conn->error . "</p>";
     }
 }
 ?>
 
-<h2>Editar Matrícula</h2>
+<h2>Editar Matrícula #<?= $id ?></h2>
 
 <form method="POST">
-    <label>Aluno:</label>
+    <label>Aluno</label>
     <select name="aluno_id" required>
-        <?php while($a = $alunos->fetch_assoc()): ?>
-            <option value="<?= $a['id'] ?>" <?= $a['id']==$mat['aluno_id']?'selected':'' ?>>
-                <?= $a['nome'] ?>
-            </option>
-        <?php endwhile; ?>
-    </select><br><br>
+        <?php while($a = $alunos->fetch_assoc()) { 
+            $sel = ($a['id'] == $mat['aluno_id']) ? 'selected' : '';
+        ?>
+            <option value="<?= $a['id'] ?>" <?= $sel ?>><?= htmlspecialchars($a['nome']) ?></option>
+        <?php } ?>
+    </select>
 
-    <label>Plano:</label>
-    <input type="text" name="plano" value="<?= $mat['plano'] ?>" required><br><br>
+    <label>Plano</label>
+    <select name="plano_id" required>
+        <?php while($p = $planos->fetch_assoc()) {
+            $sel = ($p['id'] == $mat['plano_id']) ? 'selected' : '';
+        ?>
+            <option value="<?= $p['id'] ?>" <?= $sel ?>><?= htmlspecialchars($p['nome']) ?></option>
+        <?php } ?>
+    </select>
 
-    <label>Data Matrícula:</label>
-    <input type="date" name="data_matricula" value="<?= $mat['data_matricula'] ?>" required><br><br>
+    <label>Data Matrícula</label>
+    <input type="date" name="data_matricula" value="<?= $mat['data_matricula'] ?>" required>
 
-    <label>Status:</label>
-    <select name="status">
-        <option value="ativa" <?= $mat['status']=='ativa'?'selected':'' ?>>Ativa</option>
-        <option value="inativa" <?= $mat['status']=='inativa'?'selected':'' ?>>Inativa</option>
-    </select><br><br>
+    <label>Status</label>
+    <select name="status" required>
+        <option value="Ativa" <?= $mat['status']=='Ativa'?'selected':'' ?>>Ativa</option>
+        <option value="Pendente" <?= $mat['status']=='Pendente'?'selected':'' ?>>Pendente</option>
+        <option value="Cancelada" <?= $mat['status']=='Cancelada'?'selected':'' ?>>Cancelada</option>
+    </select>
 
-    <button type="submit">Salvar Alterações</button>
+    <input type="submit" value="Salvar Alterações">
 </form>
 
-<?php include "../includes/footer.php"; ?>
+<?php include "../../includes/footer.php"; ?>

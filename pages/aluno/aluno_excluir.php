@@ -1,20 +1,7 @@
 <?php
-include_once __DIR__ . '/../includes/conexao.php';
-include_once __DIR__ . '/../includes/sessao.php';
+include "../../includes/conexao.php";
+$id = $_GET['id'];
 
-$id = intval($_GET['id'] ?? 0);
-if ($id <= 0) {
-    flash('error','Aluno inválido.');
-    header('Location: listar.php');
-    exit;
-}
+$conn->query("DELETE FROM alunos WHERE id=$id");
 
-$stmt = $conn->prepare("DELETE FROM alunos WHERE id = ?");
-$stmt->bind_param("i",$id);
-if ($stmt->execute()) {
-    flash('success','Aluno excluído.');
-} else {
-    flash('error','Erro ao excluir: ' . $stmt->error);
-}
-header('Location: listar.php');
-exit;
+echo "<script>alert('Excluído com sucesso!'); location.href='aluno_lista.php';</script>";

@@ -1,45 +1,42 @@
-<?php 
-include "../includes/header.php";
-
-$sql = "SELECT p.*, m.plano, a.nome AS aluno_nome
-        FROM pagamentos p
-        JOIN matriculas m ON p.matricula_id = m.id
-        JOIN alunos a ON m.aluno_id = a.id
-        ORDER BY p.id DESC";
-
-$result = $conn->query($sql);
-?>
+<?php include "../../includes/header.php"; ?>
 
 <h2>Lista de Pagamentos</h2>
-<a href="cadastrar.php">+ Registrar Pagamento</a>
+<a href="pagamentos_cadastro.php"><button>Registrar Pagamento</button></a>
 
-<table border="1" cellpadding="10">
-    <tr>
-        <th>ID</th>
-        <th>Aluno</th>
-        <th>Plano</th>
-        <th>Valor</th>
-        <th>Data</th>
-        <th>Método</th>
-        <th>Status</th>
-        <th>Ações</th>
-    </tr>
+<?php
+$sql = "SELECT pg.id, pg.valor, pg.data_pagamento, pg.metodo, m.id AS matricula_id, a.nome AS aluno
+        FROM pagamentos pg
+        LEFT JOIN matriculas m ON pg.matricula_id = m.id
+        LEFT JOIN alunos a ON m.aluno_id = a.id
+        ORDER BY pg.id DESC";
+$res = $conn->query($sql);
+?>
 
-    <?php while($row = $result->fetch_assoc()): ?>
-    <tr>
-        <td><?= $row['id'] ?></td>
-        <td><?= $row['aluno_nome'] ?></td>
-        <td><?= $row['plano'] ?></td>
-        <td>R$ <?= $row['valor'] ?></td>
-        <td><?= $row['data_pagamento'] ?></td>
-        <td><?= $row['metodo'] ?></td>
-        <td><?= $row['status'] ?></td>
-        <td>
-            <a href="editar.php?id=<?= $row['id'] ?>">Editar</a> |
-            <a href="excluir.php?id=<?= $row['id'] ?>">Excluir</a>
-        </td>
-    </tr>
-    <?php endwhile; ?>
+<table>
+<tr>
+    <th>ID</th>
+    <th>Aluno</th>
+    <th>Matrícula</th>
+    <th>Valor</th>
+    <th>Data</th>
+    <th>Método</th>
+    <th>Ações</th>
+</tr>
+
+<?php while($row = $res->fetch_assoc()) { ?>
+<tr>
+    <td><?= $row['id'] ?></td>
+    <td><?= htmlspecialchars($row['aluno']) ?></td>
+    <td><?= $row['matricula_id'] ?></td>
+    <td>R$ <?= number_format($row['valor'], 2, ',', '.') ?></td>
+    <td><?= $row['data_pagamento'] ?></td>
+    <td><?= htmlspecialchars($row['metodo']) ?></td>
+    <td>
+        <a href="pagamentos_editar.php?id=<?= $row['id'] ?>">Editar</a> |
+        <a href="pagamentos_excluir.php?id=<?= $row['id'] ?>" onclick="return confirm('Excluir pagamento?')">Excluir</a>
+    </td>
+</tr>
+<?php } ?>
 </table>
 
-<?php include "../includes/footer.php"; ?>
+<?php include "../../includes/footer.php"; ?>

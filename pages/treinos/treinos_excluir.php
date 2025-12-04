@@ -1,13 +1,14 @@
 <?php
-include_once __DIR__ . '/../includes/conexao.php';
-include_once __DIR__ . '/../includes/sessao.php';
+include "../../includes/sessao.php";
+include "../../includes/conexao.php";
 
-$id = intval($_GET['id'] ?? 0);
-if ($id <= 0){ flash('error','Treino inválido.'); header('Location:listar.php'); exit; }
+$id = $_GET['id'];
 
-$stmt = $conn->prepare("DELETE FROM treinos WHERE id = ?");
-$stmt->bind_param("i",$id);
-if ($stmt->execute()) flash('success','Treino excluído.');
-else flash('error','Erro ao excluir: '.$stmt->error);
+$sql = "DELETE FROM treinos WHERE id = $id";
 
-header('Location:listar.php'); exit;
+if ($conn->query($sql)) {
+    echo "<script>alert('Treino removido!'); location.href='treinos_lista.php';</script>";
+} else {
+    echo "Erro: " . $conn->error;
+}
+?>

@@ -1,10 +1,9 @@
-<?php 
-include "../includes/header.php";
+<?php
+include "../../includes/conexao.php";
 
-$id = $_GET['id'];
+$id = (int)$_GET['id'];
 
-$conn->query("DELETE FROM matriculas WHERE id = $id");
+// antes de excluir, você pode verificar pagamentos vinculados — aqui apenas exclui:
+$conn->query("DELETE FROM matriculas WHERE id=$id");
 
-header("Location: listar.php");
-exit;
-?>
+echo "<script>alert('Matrícula excluída'); location.href='matriculas_lista.php';</script>";

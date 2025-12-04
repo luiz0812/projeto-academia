@@ -1,36 +1,42 @@
+<?php include "../../includes/header.php"; ?>
+
+<h2>Cadastrar Plano</h2>
+
+if ($_POST) {
+    // (este bloco será sobreescrito pela versão PHP abaixo — manter apenas form em HTML)
+}
+?>
+
 <?php
-include_once __DIR__ . '/../includes/conexao.php';
-include_once __DIR__ . '/../includes/header.php';
+if ($_POST) {
+    $nome = $conn->real_escape_string($_POST['nome']);
+    $valor = $conn->real_escape_string($_POST['valor']);
+    $duracao = (int)$_POST['duracao_meses'];
+    $descricao = $conn->real_escape_string($_POST['descricao']);
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nome = trim($_POST['nome'] ?? '');
-    $descricao = trim($_POST['descricao'] ?? '');
-    $preco = floatval(str_replace(',', '.', $_POST['preco'] ?? 0));
-    $duracao = intval($_POST['duracao_meses'] ?? 1);
-
-    if ($nome === '') {
-        echo "<div class='flash error'>Nome obrigatório.</div>";
+    $sql = "INSERT INTO planos (nome, valor, duracao_meses, descricao) VALUES ('$nome', '$valor', $duracao, '$descricao')";
+    if ($conn->query($sql)) {
+        echo "<script>alert('Plano cadastrado!'); location.href='planos_lista.php';</script>";
     } else {
-        $stmt = $conn->prepare("INSERT INTO planos (nome, descricao, preco, duracao_meses) VALUES (?,?,?,?)");
-        $stmt->bind_param("ssdi", $nome, $descricao, $preco, $duracao);
-        if ($stmt->execute()) {
-            flash('success','Plano criado.');
-            header('Location: listar.php'); exit;
-        } else {
-            echo "<div class='flash error'>Erro: " . htmlspecialchars($stmt->error) . "</div>";
-        }
+        echo "<p>Erro: " . $conn->error . "</p>";
     }
 }
 ?>
 
-<h2>Cadastrar Plano</h2>
-<form method="post">
-  <div class="form-row"><label>Nome *</label><input type="text" name="nome" required></div>
-  <div class="form-row"><label>Descrição</label><textarea name="descricao"></textarea></div>
-  <div class="form-row"><label>Preço (use ponto ou vírgula)</label><input type="text" name="preco" value="0.00"></div>
-  <div class="form-row"><label>Duração (meses)</label><input type="number" name="duracao_meses" value="1" min="1"></div>
-  <input type="submit" value="Salvar">
-  <a href="listar.php" class="button" style="background:#777;margin-left:8px">Cancelar</a>
+<form method="POST">
+    <label>Nome do Plano</label>
+    <input type="text" name="nome" required>
+
+    <label>Valor</label>
+    <input type="text" name="valor" placeholder="Ex: 120.00" required>
+
+    <label>Duração (meses)</label>
+    <input type="number" name="duracao_meses" min="1" value="1" required>
+
+    <label>Descrição</label>
+    <input type="text" name="descricao">
+
+    <input type="submit" value="Salvar Plano">
 </form>
 
-<?php include_once __DIR__ . '/../includes/footer.php'; ?>
+<?php include "../../includes/footer.php"; ?>

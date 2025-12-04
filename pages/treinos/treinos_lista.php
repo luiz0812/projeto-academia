@@ -1,29 +1,35 @@
 <?php
-include_once __DIR__ . '/../includes/conexao.php';
-include_once __DIR__ . '/../includes/header.php';
+include "../../includes/sessao.php";
+include "../../includes/conexao.php";
+include "../../includes/header.php";
 
-$sql = "SELECT t.*, a.nome AS aluno_nome FROM treinos t JOIN alunos a ON t.aluno_id = a.id ORDER BY t.id DESC";
-$res = $conn->query($sql);
+$sql = "SELECT * FROM treinos ORDER BY id DESC";
+$result = $conn->query($sql);
 ?>
-<h2>Treinos <a class="button" href="cadastrar.php" style="float:right">+ Novo</a></h2>
 
-<table>
-  <thead><tr><th>ID</th><th>Aluno</th><th>Título</th><th>Dia</th><th>Criado em</th><th>Ações</th></tr></thead>
-  <tbody>
-  <?php while($r = $res->fetch_assoc()): ?>
+<h2>Lista de Treinos</h2>
+
+<a href="treinos_cadastro.php" class="btn">+ Novo Treino</a>
+
+<table border="1" cellpadding="10" width="100%">
     <tr>
-      <td><?= $r['id'] ?></td>
-      <td><?= htmlspecialchars($r['aluno_nome']) ?></td>
-      <td><?= htmlspecialchars($r['titulo']) ?></td>
-      <td><?= htmlspecialchars($r['dia_semana']) ?></td>
-      <td><?= $r['criado_em'] ?></td>
-      <td>
-        <a href="editar.php?id=<?= $r['id'] ?>">Editar</a> |
-        <a href="excluir.php?id=<?= $r['id'] ?>" onclick="return confirm('Excluir este treino?')">Excluir</a>
-      </td>
+        <th>ID</th>
+        <th>Nome do Treino</th>
+        <th>Descrição</th>
+        <th>Ações</th>
     </tr>
-  <?php endwhile; ?>
-  </tbody>
+
+    <?php while($t = $result->fetch_assoc()) { ?>
+    <tr>
+        <td><?= $t['id']; ?></td>
+        <td><?= $t['nome']; ?></td>
+        <td><?= $t['descricao']; ?></td>
+        <td>
+            <a class="btn edit" href="treinos_editar.php?id=<?= $t['id']; ?>">Editar</a>
+            <a class="btn delete" href="treinos_excluir.php?id=<?= $t['id']; ?>">Excluir</a>
+        </td>
+    </tr>
+    <?php } ?>
 </table>
 
-<?php include_once __DIR__ . '/../includes/footer.php'; ?>
+<?php include "../../includes/footer.php"; ?>

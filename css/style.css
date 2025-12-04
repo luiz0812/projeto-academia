@@ -1,18 +1,72 @@
-/* css/style.css */
-*{box-sizing:border-box;font-family:Arial, Helvetica, sans-serif}
-body{margin:0;background:#f7f7f7;color:#222}
-.topbar{background:#222;color:#fff;padding:12px 18px;display:flex;align-items:center;justify-content:space-between}
-.topbar a{color:#fff;text-decoration:none;margin-left:12px}
-.container{max-width:1000px;margin:20px auto;padding:18px;background:#fff;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,0.05)}
-table{width:100%;border-collapse:collapse;margin-top:12px}
-th,td{padding:8px;border:1px solid #ddd;text-align:left}
-a.button{display:inline-block;padding:8px 12px;border-radius:6px;text-decoration:none;background:#0b74de;color:#fff}
-.form-row{margin-bottom:10px}
-label{display:block;margin-bottom:6px;font-weight:600}
-input[type="text"],input[type="email"],input[type="date"],textarea,select{width:100%;padding:8px;border:1px solid #ccc;border-radius:4px}
-input[type="submit"],button{padding:8px 12px;border-radius:6px;border:0;background:#0b74de;color:#fff;cursor:pointer}
-.flash{padding:10px;margin-bottom:12px;border-radius:4px}
-.flash.success{background:#e6ffed;border:1px solid #b7f0c9}
-.flash.error{background:#ffe6e6;border:1px solid #f0b7b7}
-.footer{padding:12px;text-align:center;color:#777;margin-top:18px}
-small{color:#666}
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+    margin: 0;
+}
+
+header {
+    background: #222;
+    color: #fff;
+    padding: 15px;
+}
+
+header h1 {
+    margin: 0;
+}
+
+nav a {
+    color: #fff;
+    margin-right: 15px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+.container {
+    background: #fff;
+    padding: 20px;
+    margin: 20px auto;
+    width: 85%;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #ccc;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+table th, table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+button, input[type=submit] {
+    padding: 8px 12px;
+    background: #222;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover, input[type=submit]:hover {
+    background: #444;
+}
+
+form input, form select {
+    padding: 10px;
+    margin: 5px 0;
+    width: 100%;
+}
+
+footer {
+    background: #222;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+}

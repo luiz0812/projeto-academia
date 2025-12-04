@@ -1,39 +1,40 @@
-<?php 
-include "../includes/header.php";
-
-$sql = "SELECT m.*, a.nome AS aluno_nome 
-        FROM matriculas m
-        JOIN alunos a ON m.aluno_id = a.id
-        ORDER BY m.id DESC";
-$result = $conn->query($sql);
-?>
+<?php include "../../includes/header.php"; ?>
 
 <h2>Lista de Matrículas</h2>
-<a href="cadastrar.php">+ Nova Matrícula</a>
+<a href="matriculas_cadastro.php"><button>Cadastrar Matrícula</button></a>
 
-<table border="1" cellpadding="10">
-    <tr>
-        <th>ID</th>
-        <th>Aluno</th>
-        <th>Plano</th>
-        <th>Data</th>
-        <th>Status</th>
-        <th>Ações</th>
-    </tr>
+<?php
+$sql = "SELECT m.id, m.data_matricula, m.status, a.nome AS aluno, p.nome AS plano
+        FROM matriculas m
+        LEFT JOIN alunos a ON m.aluno_id = a.id
+        LEFT JOIN planos p ON m.plano_id = p.id
+        ORDER BY m.id DESC";
+$res = $conn->query($sql);
+?>
 
-    <?php while($row = $result->fetch_assoc()): ?>
-    <tr>
-        <td><?= $row['id'] ?></td>
-        <td><?= $row['aluno_nome'] ?></td>
-        <td><?= $row['plano'] ?></td>
-        <td><?= $row['data_matricula'] ?></td>
-        <td><?= $row['status'] ?></td>
-        <td>
-            <a href="editar.php?id=<?= $row['id'] ?>">Editar</a> |
-            <a href="excluir.php?id=<?= $row['id'] ?>">Excluir</a>
-        </td>
-    </tr>
-    <?php endwhile; ?>
+<table>
+<tr>
+    <th>ID</th>
+    <th>Aluno</th>
+    <th>Plano</th>
+    <th>Data</th>
+    <th>Status</th>
+    <th>Ações</th>
+</tr>
+
+<?php while($row = $res->fetch_assoc()) { ?>
+<tr>
+    <td><?= $row['id'] ?></td>
+    <td><?= htmlspecialchars($row['aluno']) ?></td>
+    <td><?= htmlspecialchars($row['plano']) ?></td>
+    <td><?= $row['data_matricula'] ?></td>
+    <td><?= htmlspecialchars($row['status']) ?></td>
+    <td>
+        <a href="matriculas_editar.php?id=<?= $row['id'] ?>">Editar</a> |
+        <a href="matriculas_excluir.php?id=<?= $row['id'] ?>" onclick="return confirm('Excluir matrícula?')">Excluir</a>
+    </td>
+</tr>
+<?php } ?>
 </table>
 
-<?php include "../includes/footer.php"; ?>
+<?php include "../../includes/footer.php"; ?>
