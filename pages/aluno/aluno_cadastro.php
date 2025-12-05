@@ -1,7 +1,10 @@
+<a href="../../index.php" class="btn-voltar">⬅ Voltar</a>
+
 <?php
 include "../../includes/sessao.php";
 include "../../includes/conexao.php";
 include "../../includes/header.php";
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nome = $conn->real_escape_string($_POST['nome']);
