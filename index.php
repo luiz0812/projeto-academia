@@ -31,25 +31,7 @@
             <p>Registrar pagamentos e mensalidades</p>
         </a>
         <?php
-$pag = basename($_SERVER['PHP_SELF']);
-if ($pag !== "index.php") {
-    echo '<a href="index.php" 
-           style="
-                display:inline-block;
-                padding:10px 18px;
-                background:#E53935;
-                color:white;
-                font-weight:bold;
-                text-decoration:none;
-                border-radius:8px;
-                margin-bottom:20px;
-                font-size:16px;
-                transition:0.2s;
-           ">⟵ Voltar</a>';
-}
 ?>
-
-        
 
     </div>
 </section>
