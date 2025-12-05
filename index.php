@@ -30,9 +30,6 @@
             <h3>💰 Pagamentos</h3>
             <p>Registrar pagamentos e mensalidades</p>
         </a>
-        <?php
-?>
-
     </div>
 </section>
 
