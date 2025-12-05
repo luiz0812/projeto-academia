@@ -183,22 +183,3 @@ tr:hover td{background:#fff5f5}
     .home h2{font-size:25px}
     .cards{grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
 }
-
-/* ==================== BOTÃO VOLTAR ==================== */
-.btn-voltar{
-    display: inline-block;
-    padding: 10px 16px;
-    background: var(--primary);
-    color: #fff !important;
-    text-decoration: none !important;
-    border-radius: 8px;
-    font-weight: 700;
-    font-size: 14px;
-    margin-bottom: 15px;
-    transition: .2s;
-}
-
-.btn-voltar:hover{
-    background: var(--primary-dark);
-    transform: translateX(-3px);
-}
